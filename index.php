@@ -1,6 +1,7 @@
 <?php
 
 require_once 'controllers/MealController.php';
+require_once 'config/Database.php';
 
 $routes = require 'routes/routes.php';
 
