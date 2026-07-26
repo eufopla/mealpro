@@ -2,6 +2,7 @@
 
 require_once 'controllers/MealController.php';
 require_once 'config/Database.php';
+require 'functions/meal.php';
 
 $routes = require 'routes/mealroutes.php';
 
@@ -25,11 +26,11 @@ if ($uri === '' || $uri === '/') {
   <header>
     <div>
       <h1>Meal API</h1>
-      <p>PHP — sans framework</p>
+      <p>By Hiro & Eufopla</p>
     </div>
   </header>
 
-  <div class="section-title">Routes disponibles</div>
+  <div class="section-title">Test</div>
   <div class="routes">
     <div class="route"><span class="method GET">GET</span><span class="route-path">/meals</span><span class="route-desc">Liste tous les repas</span></div>
     <div class="route"><span class="method GET">GET</span><span class="route-path">/meals/{id}</span><span class="route-desc">Détail d'un repas</span></div>
@@ -38,6 +39,8 @@ if ($uri === '' || $uri === '/') {
     <div class="route"><span class="method DELETE">DELETE</span><span class="route-path">/meals/{id}</span><span class="route-desc">Supprimer un repas</span></div>
   </div>
 
+  <div>Liste des plats</div>
+  <?php foreach ($meals as $meal): ?>
   <div class="section-title">Tester — créer un repas</div>
   <div class="card">
     <div class="form-row">
