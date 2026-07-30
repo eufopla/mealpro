@@ -43,6 +43,12 @@ if ($uri === '' || $uri === '/') {
   <?php 
   $meals = getAllMeals();
   foreach ($meals as $meal): ?>
+    <div class="meal">
+      <h3><?php echo htmlspecialchars($meal['name']); ?></h3>
+      <p><?php echo htmlspecialchars($meal['description']); ?></p>
+      <p>Calories: <?php echo $meal['calories']; ?></p>
+    </div>
+  <?php endforeach; ?>
   <div class="section-title">Tester — créer un repas</div>
   <div class="card">
     <div class="form-row">
