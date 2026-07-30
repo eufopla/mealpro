@@ -40,7 +40,9 @@ if ($uri === '' || $uri === '/') {
   </div>
 
   <div>Liste des plats</div>
-  <?php foreach ($meals as $meal): ?>
+  <?php 
+  $meals = getAllMeals();
+  foreach ($meals as $meal): ?>
   <div class="section-title">Tester — créer un repas</div>
   <div class="card">
     <div class="form-row">
@@ -95,4 +97,4 @@ if (isset($routes[$method][$uri])) {
 } else {
     http_response_code(404);
     echo json_encode(['error' => 'Route not found']);
-}
+} 
