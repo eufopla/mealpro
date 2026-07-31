@@ -3,7 +3,12 @@
 require_once 'functions/meal.php';
 require_once 'functions/user.php';
 require_once 'config/database.php';
+session_start();
 
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
 $routes = require 'routes/mealroutes.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -28,6 +33,7 @@ if ($uri === '' || $uri === '/') {
 
 <header>
     <div>
+        <h2>Bienvenue <?= htmlspecialchars($_SESSION['user_name']) ?></h2>
         <h1>Meal API</h1>
         <p>By Hiro & Eufopla</p>
     </div>
