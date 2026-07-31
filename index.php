@@ -83,8 +83,29 @@ if ($uri === '' || $uri === '/') {
     <?php endif; ?>
     
 </div>
+<div class="section-title">Ajouter un ingrédient</div>
+<form method="POST">
+    <strong>Nom de l'ingrédient :</strong>
+    <input type="text" name="name">
 
+    <strong>Description :</strong>
+    <textarea name="description"></textarea>
 
+    <strong>Mesure (g, ml, l) :</strong>
+    <input type="text" name="measure">
+
+    <button type="submit">Ajouter l'ingrédient</button>
+</form>
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $name = $_POST['name'];
+    $description = $_POST['description'];
+    $measure = $_POST['measure'];
+
+    createIngredient($pdo, $name, $description, $measure);
+}
+?>
 </body>
 </html>
 
