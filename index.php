@@ -1,6 +1,7 @@
 <?php
 
 require_once 'functions/meal.php';
+require_once 'functions/user.php';
 require_once 'config/database.php';
 
 $routes = require 'routes/mealroutes.php';
@@ -13,6 +14,7 @@ if ($uri === '' || $uri === '/') {
     header('Content-Type: text/html');
     $meals = getAllMeals($pdo);
     $ingredients = getAllIngredients($pdo);
+    $users_info = getAllUserInfo($pdo);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -61,13 +63,27 @@ if ($uri === '' || $uri === '/') {
             <div class="meal-card">
                 <h3><?= htmlspecialchars($ingredient['name']) ?></h3>
                 <p>
-                    <strong>Description :</strong><br>
                     <?= htmlspecialchars($ingredient['description']) ?>
                 </p>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
+<br><br>
 </div>
+<div class="section-title">Liste des utilisateurs</div>
+<div class="meals-container">
+    <?php if (empty($users_info)): ?>
+        <p>Aucun utilisateur trouvé.</p>
+    <?php else: ?>
+        <?php foreach ($users_info as $user): ?>
+            <div class="meal-card">
+                <h3><?= htmlspecialchars($user['name']) ?></h3>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    
+</div>
+
 
 </body>
 </html>
