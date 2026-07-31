@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NUTRINET // Connexion</title>
   </head>
@@ -20,7 +21,7 @@
       <h2 class="who">QUI ES-TU ?</h2>
 
       <div class="profiles">
-        <a href="#chatouni-pin" class="profile" style="--neon:#FCEE0A; --neon-soft:rgba(252,238,10,.35)">
+        <a href="#" class="profile" data-profile="chatouni" style="--neon:#FCEE0A; --neon-soft:rgba(252,238,10,.35)">
           <div class="avatar-wrap">
             <div class="avatar">
               <img src="assets/img/cat.jpeg" alt="Chatouni" />
@@ -31,7 +32,7 @@
           <span class="profile-tag">utilisateur_01</span>
         </a>
 
-        <a href="#lapinou-pin" class="profile" style="--neon:#00FF9C; --neon-soft:rgba(0,255,156,.35)">
+        <a href="#" class="profile" data-profile="lapinou" style="--neon:#00FF9C; --neon-soft:rgba(0,255,156,.35)">
           <div class="avatar-wrap">
             <div class="avatar">
               <img src="assets/img/rabbit.jpeg" alt="Lapinou" />
@@ -48,49 +49,27 @@
       </footer>
     </section>
 
-    <!-- ECRAN PIN CHATOUNI -->
-    <section id="chatouni-pin" class="screen pin-screen">
-      <a href="#profiles" class="back">&larr; RETOUR</a>
-      <div class="pin-profile" style="--neon:#FCEE0A; --neon-soft:rgba(252,238,10,.35)">
-        <div class="avatar mini">
-          <img src="https://images.pexels.com/photos/20548749/pexels-photo-20548749.png?auto=compress&cs=tinysrgb&h=650&w=940" alt="Chatouni" />
+    <!-- ECRAN RECONNAISSANCE FACIALE -->
+    <section id="face-scan" class="screen face-scan">
+      <div class="scan-frame" style="--neon:#FCEE0A; --neon-soft:rgba(252,238,10,.35)">
+        <div class="scan-img">
+          <img id="scan-avatar" src="" alt="" />
+          <div class="scan-overlay"></div>
+          <div class="scan-line"></div>
         </div>
-        <h2 class="pin-title">CHATOUNI</h2>
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
       </div>
-      <p class="pin-prompt">SAISIS TON CODE D'ACCÈS</p>
-      <div class="pin-dots">
-        <span class="dot-pin"></span><span class="dot-pin"></span>
-        <span class="dot-pin"></span><span class="dot-pin"></span>
-      </div>
-      <div class="keypad">
-        <button class="key">1</button><button class="key">2</button><button class="key">3</button>
-        <button class="key">4</button><button class="key">5</button><button class="key">6</button>
-        <button class="key">7</button><button class="key">8</button><button class="key">9</button>
-        <button class="key ghost">&nbsp;</button><button class="key">0</button>
-        <button class="key del" aria-label="effacer">&times;</button>
-      </div>
-    </section>
 
-    <!-- ECRAN PIN LAPINOU -->
-    <section id="lapinou-pin" class="screen pin-screen">
-      <a href="#profiles" class="back">&larr; RETOUR</a>
-      <div class="pin-profile" style="--neon:#00FF9C; --neon-soft:rgba(0,255,156,.35)">
-        <div class="avatar mini">
-          <img src="https://images.pexels.com/photos/19904640/pexels-photo-19904640.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Lapinou" />
+      <div class="scan-info">
+        <h2 id="scan-name" class="scan-name">CHATOUNI</h2>
+        <p id="scan-status" class="scan-status">INITIALISATION SCAN BIOMÉTRIQUE...</p>
+        <div class="scan-progress">
+          <div id="scan-bar" class="scan-bar"></div>
         </div>
-        <h2 class="pin-title">LAPINOU</h2>
-      </div>
-      <p class="pin-prompt">SAISIS TON CODE D'ACCÈS</p>
-      <div class="pin-dots">
-        <span class="dot-pin"></span><span class="dot-pin"></span>
-        <span class="dot-pin"></span><span class="dot-pin"></span>
-      </div>
-      <div class="keypad">
-        <button class="key">1</button><button class="key">2</button><button class="key">3</button>
-        <button class="key">4</button><button class="key">5</button><button class="key">6</button>
-        <button class="key">7</button><button class="key">8</button><button class="key">9</button>
-        <button class="key ghost">&nbsp;</button><button class="key">0</button>
-        <button class="key del" aria-label="effacer">&times;</button>
+        <p id="scan-pct" class="scan-pct">0%</p>
       </div>
     </section>
 
