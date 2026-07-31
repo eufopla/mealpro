@@ -19,6 +19,7 @@ function createIngredient(PDO $db, string $name, string $description, string $me
     }
     else {
         $stmt = $db->prepare("INSERT INTO ingredient (name, description, measure) VALUES (:name, :description, :measure)");
-        return $stmt->execute(['name' => $name, 'description' => $description, 'measure' => $measure]);
+        $stmt->execute(['name' => $name, 'description' => $description, 'measure' => $measure]);
+        return ['success' => true, 'message' => 'Ingrédient ajouté avec succès.'];
     }
 }
