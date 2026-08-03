@@ -1,4 +1,6 @@
 <?php
+require_once 'functions/log.php';
+
 function getAllIngredients(PDO $db): array
 {
     $stmt = $db->query("SELECT name, description FROM ingredient");
@@ -22,6 +24,7 @@ function createIngredient(PDO $db, string $name, string $description, string $me
     else {
         $stmt = $db->prepare("INSERT INTO ingredient (name, description, measure) VALUES (:name, :description, :measure)");
         $stmt->execute(['name' => $name, 'description' => $description, 'measure' => $measure]);
+        createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'create', 'ingredient', $db->lastInsertId());
         return ['success' => true, 'message' => 'Ingrédient ajouté avec succès.'];
     }
 }
@@ -39,6 +42,7 @@ function updateIngredient(PDO $db, int $id, string $name, string $description, s
     else {
         $stmt = $db->prepare("UPDATE ingredient SET name = :name, description = :description, measure = :measure, g_protein_for_100m = :g_protein_for_100m, k_calories_for_100m = :k_calories_for_100m, g_fat_for_100m = :g_fat_for_100m, g_saturated_fat_for_100m = :g_saturated_fat_for_100m, g_fiber_for_100m = :g_fiber_for_100m, g_carbohydrate_for_100m = :g_carbohydrate_for_100m, g_sugars_for_100m = :g_sugars_for_100m, g_salt_for_100m = :g_salt_for_100m WHERE id = :id");
         $stmt->execute(['id' => $id, 'name' => $name, 'description' => $description, 'measure' => $measure, 'g_protein_for_100m' => $g_protein_for_100m, 'k_calories_for_100m' => $k_calories_for_100m, 'g_fat_for_100m' => $g_fat_for_100m, 'g_saturated_fat_for_100m' => $g_saturated_fat_for_100m, 'g_fiber_for_100m' => $g_fiber_for_100m, 'g_carbohydrate_for_100m' => $g_carbohydrate_for_100m, 'g_sugars_for_100m' => $g_sugars_for_100m, 'g_salt_for_100m' => $g_salt_for_100m]);
+        createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'update', 'ingredient', $id);
         return ['success' => true, 'message' => 'Ingrédient mis à jour avec succès.'];
     }
 }
@@ -46,6 +50,7 @@ function hardDeleteIngredient(PDO $db, int $id): array
 {
     $stmt = $db->prepare("DELETE FROM ingredient WHERE id = :id");
     $stmt->execute(['id' => $id]);
+    createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'delete', 'ingredient', $id);
     return ['success' => true, 'message' => 'Ingrédient supprimé avec succès.'];
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+require_once 'functions/log.php';
 function getAllMeals(PDO $db): array
 {
     $stmt = $db->query("SELECT name, description, nbr_ppl FROM meal");
@@ -21,6 +22,7 @@ function createMeal(PDO $db, string $name, string $description, int $nbr_ppl): a
     else {
         $stmt = $db->prepare("INSERT INTO meal (name, description, nbr_ppl) VALUES (:name, :description, :nbr_ppl)");
         $stmt->execute(['name' => $name, 'description' => $description, 'nbr_ppl' => $nbr_ppl]);
+        createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'create', 'meal', $db->lastInsertId());
         return ['success' => true, 'message' => 'Repas ajouté avec succès.'];
     }
 }
@@ -38,6 +40,7 @@ function updateMeal(PDO $db, int $id, string $name, string $description, int $nb
     else {
         $stmt = $db->prepare("UPDATE meal SET name = :name, description = :description, nbr_ppl = :nbr_ppl WHERE id = :id");
         $stmt->execute(['id' => $id, 'name' => $name, 'description' => $description, 'nbr_ppl' => $nbr_ppl]);
+        createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'update', 'meal', $id);
         return ['success' => true, 'message' => 'Repas mis à jour avec succès.'];
     }
 }
@@ -45,6 +48,7 @@ function hardDeleteMeal(PDO $db, int $id): array
 {
     $stmt = $db->prepare("DELETE FROM meal WHERE id = :id");
     $stmt->execute(['id' => $id]);
+    createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'delete', 'meal', $id);
     return ['success' => true, 'message' => 'Repas supprimé avec succès.'];
 }
 ?>
