@@ -4,22 +4,47 @@ function getAllMeals(PDO $db): array
     $stmt = $db->query("SELECT name, description, nbr_ppl FROM meal");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-function getAllIngredients(PDO $db): array
+function getMealById(PDO $db, int $id): array
 {
-    $stmt = $db->query("SELECT name, description FROM ingredient");
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $db->prepare("SELECT name, description, nbr_ppl FROM meal WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
-function createIngredient(PDO $db, string $name, string $description, string $measure): array
+function createMeal(PDO $db, string $name, string $description, int $nbr_ppl): array
 {
-    if (empty($name) || empty($description) || empty($measure)) {
+    if (empty($name) || empty($description) || empty($nbr_ppl)) {
         return ['success' => false, 'message' => 'Tous les champs sont requis.'];
     }
-    else if ($measure !== 'g' && $measure !== 'ml' && $measure !== 'l') {
-        return ['success' => false, 'message' => 'Le champ de mesure est incorrect.'];
+    else if ($nbr_ppl <= 0) {
+        return ['success' => false, 'message' => 'Le nombre de personnes doit être supérieur à zéro.'];
     }
     else {
-        $stmt = $db->prepare("INSERT INTO ingredient (name, description, measure) VALUES (:name, :description, :measure)");
-        $stmt->execute(['name' => $name, 'description' => $description, 'measure' => $measure]);
-        return ['success' => true, 'message' => 'Ingrédient ajouté avec succès.'];
+        $stmt = $db->prepare("INSERT INTO meal (name, description, nbr_ppl) VALUES (:name, :description, :nbr_ppl)");
+        $stmt->execute(['name' => $name, 'description' => $description, 'nbr_ppl' => $nbr_ppl]);
+        return ['success' => true, 'message' => 'Repas ajouté avec succès.'];
     }
 }
+function updateMeal(PDO $db, int $id, string $name, string $description, int $nbr_ppl): array
+{
+    if (empty($name) || empty($description) || empty($nbr_ppl)) {
+        return ['success' => false, 'message' => 'Tous les champs sont requis.'];
+    }
+    else if ($nbr_ppl <= 0) {
+        return ['success' => false, 'message' => 'Le nombre de personnes doit être supérieur à zéro.'];
+    }
+    else if ($name === getMealById($db, $id)['name'] && $description === getMealById($db, $id)['description'] && $nbr_ppl === getMealById($db, $id)['nbr_ppl']) {
+        return ['success' => false, 'message' => 'Aucune modification n\'a été effectuée.'];
+    }
+    else {
+        $stmt = $db->prepare("UPDATE meal SET name = :name, description = :description, nbr_ppl = :nbr_ppl WHERE id = :id");
+        $stmt->execute(['id' => $id, 'name' => $name, 'description' => $description, 'nbr_ppl' => $nbr_ppl]);
+        return ['success' => true, 'message' => 'Repas mis à jour avec succès.'];
+    }
+}
+function hardDeleteMeal(PDO $db, int $id): array
+{
+    $stmt = $db->prepare("DELETE FROM meal WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+    return ['success' => true, 'message' => 'Repas supprimé avec succès.'];
+}
+?>
