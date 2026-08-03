@@ -20,7 +20,7 @@ input, textarea { width: 100%; padding: 8px 10px; border: 1px solid #e5e5e0; bor
 input:focus, textarea:focus { outline: none; border-color: #378add; }
 textarea { height: 72px; resize: none; }
 .actions { display: flex; gap: 8px; margin-top: 4px; }
-button { padding: 8px 16px; border: 1px solid #ccc; border-radius: 6px; background: transparent; font-size: 13px; cursor: pointer; }
+button { padding: 8px 16px; border: 1px solid #a8eb0b; border-radius: 6px; background: white; font-size: 13px; cursor: pointer; }
 button:hover { background: #f0f0ee; }
 .btn-primary { background: #378add; color: #fff; border-color: transparent; }
 .btn-primary:hover { background: #185fa5; }

@@ -1,9 +1,9 @@
 <?php
-require_once 'functions/log.php';
+require_once 'log.php';
 
 function getAllIngredients(PDO $db): array
 {
-    $stmt = $db->query("SELECT name, description FROM ingredient");
+    $stmt = $db->query("SELECT * FROM ingredient");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
