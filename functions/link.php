@@ -1,6 +1,6 @@
 <?php
-require_once 'functions/meal.php';
-require_once 'functions/ingredient.php';
+require_once 'meal.php';
+require_once 'ingredient.php';
 
 function checkIfLinkExists(PDO $db, int $id_meal, int $id_ingredient): bool
 {

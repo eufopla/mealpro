@@ -2,12 +2,60 @@
 session_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../functions/meal.php';
+require_once __DIR__ . '/../functions/link.php';
 require_once __DIR__ . '/../functions/ingredient.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
 $ingredients = getAllIngredients($pdo);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $name = trim($_POST['name'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $nbr_ppl = (int) ($_POST['nbr_ppl'] ?? 2);
+
+    $ingredients = $_POST['ingredients'] ?? [];
+
+
+  $result = createMeal(
+    $pdo,
+    $name,
+    $description,
+    $nbr_ppl
+);
+
+if (!$result['success']) {
+    die($result['message']);
+}
+
+$id_meal = $result['id_meal'];
+
+
+    /*
+     * 2. Création des liens avec les ingrédients
+     *
+     * Les IDs viennent automatiquement du formulaire :
+     *
+     * ingredients[ID_INGREDIENT] = QUANTITE
+     */
+    foreach ($ingredients as $id_ingredient => $quantity) {
+
+        createLink(
+            $pdo,
+            (int) $id_meal,
+            (int) $id_ingredient,
+            (int) $quantity
+        );
+    }
+
+
+    /*
+     * 3. Retour à la liste
+     */
+    header('Location: index.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,7 +75,8 @@ $ingredients = getAllIngredients($pdo);
 <h2>Ajouter un repas</h2>
 <form method="POST">
     <div class="form-row">
-        <label for="name">Nom du repas</label>
+        <br>
+        <h3>Nom du repas</h3>
         <input
             type="text"
             id="name"
@@ -37,23 +86,35 @@ $ingredients = getAllIngredients($pdo);
         >
     </div>
     <div class="form-row">
-        <label for="name">Choix des ingrédients</label>
-        <?php foreach ($ingredients as $ingredient): ?>
-            <div>
-                <input
-                    type="checkbox"
-                    id="ingredient_<?= htmlspecialchars($ingredient['id']) ?>"
-                    name="ingredients[]"
-                    value="<?= htmlspecialchars($ingredient['id']) ?>"
-                >
-                <label for="ingredient_<?= htmlspecialchars($ingredient['id']) ?>">
-                    <?= htmlspecialchars($ingredient['name']) ?>
-                </label>
+
+    <h3>Choix des ingrédients</h3>
+
+    <input
+        type="search"
+        id="ingredient-search"
+        placeholder="Rechercher un ingrédient..."
+        autocomplete="off"
+    >
+
+    <div class="ingredient-area">
+
+        <div class="ingredient-panel">
+            <h4>Résultats</h4>
+            <div id="ingredient-results"></div>
+        </div>
+
+        <div class="ingredient-panel">
+            <h4>Ingrédients sélectionnés</h4>
+            <div id="selected-ingredients">
+                <p>Aucun ingrédient sélectionné.</p>
             </div>
-        <?php endforeach; ?>
+        </div>
+
     </div>
+
+</div>
     <div class="form-row">
-        <label for="description">Description</label>
+        <br><h3>Description</h3>
         <textarea
             id="description"
             name="description"
@@ -61,7 +122,7 @@ $ingredients = getAllIngredients($pdo);
         ></textarea>
     </div>
     <div class="form-row">
-        <label for="nbr_ppl">Nombre de personnes</label>
+        <br><h3>Nombre de personnes</h3>
         <input
             type="number"
             id="nbr_ppl"
@@ -82,5 +143,143 @@ $ingredients = getAllIngredients($pdo);
         </a>
     </div>
 </form>
+<script>
+
+const ingredients = <?= json_encode(
+    $ingredients,
+    JSON_UNESCAPED_UNICODE |
+    JSON_HEX_TAG |
+    JSON_HEX_APOS |
+    JSON_HEX_QUOT |
+    JSON_HEX_AMP
+) ?>;
+
+const selectedIngredients = {};
+
+const searchInput = document.getElementById('ingredient-search');
+const results = document.getElementById('ingredient-results');
+const selected = document.getElementById('selected-ingredients');
+
+
+function displayResults() {
+
+    const search = searchInput.value.toLowerCase().trim();
+
+    results.innerHTML = '';
+
+    if (!search) {
+        return;
+    }
+
+    ingredients
+        .filter(ingredient =>
+            ingredient.name.toLowerCase().includes(search)
+        )
+        .forEach(ingredient => {
+
+            const button = document.createElement('button');
+
+            button.type = 'button';
+            button.className = 'ingredient-result';
+
+            button.textContent = ingredient.name;
+
+            if (selectedIngredients[ingredient.id]) {
+
+                button.disabled = true;
+                button.textContent += ' ✓';
+
+            } else {
+
+                button.addEventListener('click', () => {
+
+                    selectedIngredients[ingredient.id] = {
+                        id: ingredient.id,
+                        name: ingredient.name,
+                        measure: ingredient.measure,
+                        quantity: 100
+                    };
+
+                    displaySelected();
+                    displayResults();
+
+                });
+
+            }
+
+            results.appendChild(button);
+
+        });
+}
+
+
+function displaySelected() {
+
+    selected.innerHTML = '';
+
+    const list = Object.values(selectedIngredients);
+
+    if (list.length === 0) {
+
+        selected.innerHTML =
+            '<p>Aucun ingrédient sélectionné.</p>';
+
+        return;
+    }
+
+    list.forEach(ingredient => {
+
+        const row = document.createElement('div');
+
+        row.className = 'selected-ingredient';
+
+        row.innerHTML = `
+            <span class="selected-name">
+                ${ingredient.name}
+            </span>
+
+            <input
+                type="number"
+                name="ingredients[${ingredient.id}]"
+                value="${ingredient.quantity}"
+                min="1"
+                class="quantity-input"
+            >
+
+            <span>${ingredient.measure}</span>
+
+            <button type="button" class="remove-ingredient">
+                ×
+            </button>
+        `;
+
+        row.querySelector('.quantity-input')
+            .addEventListener('input', event => {
+
+                ingredient.quantity = event.target.value;
+
+            });
+
+        row.querySelector('.remove-ingredient')
+            .addEventListener('click', () => {
+
+                delete selectedIngredients[ingredient.id];
+
+                displaySelected();
+                displayResults();
+
+            });
+
+        selected.appendChild(row);
+
+    });
+}
+
+
+searchInput.addEventListener('input', displayResults);
+
+displaySelected();
+
+</script>
 </body>
 </html>

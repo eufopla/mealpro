@@ -20,11 +20,11 @@ function hardDeleteLog(PDO $db, int $log_id): bool
     return $stmt->execute(['log_id' => $log_id]);
 }
 
-function createLog(PDO $db, int $user_id, string $date_time, string $ac, string $table_name, int $table_id): bool
+function createLog(PDO $db, int $id_user, string $date_time, string $ac, string $table_name, int $table_id): bool
 {
-    $stmt = $db->prepare("INSERT INTO log (user_id, date_time, ac, table_name, table_id) VALUES (:user_id, :date_time, :ac, :table_name, :table_id)");
+    $stmt = $db->prepare("INSERT INTO log (id_user, date_time, ac, table_name, table_id) VALUES (:id_user, :date_time, :ac, :table_name, :table_id)");
     return $stmt->execute([
-        'user_id' => $user_id,
+        'id_user' => $id_user,
         'date_time' => $date_time,
         'ac' => $ac,
         'table_name' => $table_name,

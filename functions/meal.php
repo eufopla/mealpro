@@ -14,17 +14,46 @@ function getMealById(PDO $db, int $id): array
 function createMeal(PDO $db, string $name, string $description, int $nbr_ppl): array
 {
     if (empty($name) || empty($description) || empty($nbr_ppl)) {
-        return ['success' => false, 'message' => 'Tous les champs sont requis.'];
+        return [
+            'success' => false,
+            'message' => 'Tous les champs sont requis.'
+        ];
     }
-    else if ($nbr_ppl <= 0) {
-        return ['success' => false, 'message' => 'Le nombre de personnes doit être supérieur à zéro.'];
+
+    if ($nbr_ppl <= 0) {
+        return [
+            'success' => false,
+            'message' => 'Le nombre de personnes doit être supérieur à zéro.'
+        ];
     }
-    else {
-        $stmt = $db->prepare("INSERT INTO meal (name, description, nbr_ppl) VALUES (:name, :description, :nbr_ppl)");
-        $stmt->execute(['name' => $name, 'description' => $description, 'nbr_ppl' => $nbr_ppl]);
-        createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'create', 'meal', $db->lastInsertId());
-        return ['success' => true, 'message' => 'Repas ajouté avec succès.'];
-    }
+
+    $stmt = $db->prepare("
+        INSERT INTO meal (name, description, nbr_ppl)
+        VALUES (:name, :description, :nbr_ppl)
+    ");
+
+    $stmt->execute([
+        'name' => $name,
+        'description' => $description,
+        'nbr_ppl' => $nbr_ppl
+    ]);
+
+    $id_meal = (int) $db->lastInsertId();
+
+    createLog(
+        $db,
+        $_SESSION['user_id'],
+        date('Y-m-d H:i:s'),
+        'create',
+        'meal',
+        $id_meal
+    );
+
+    return [
+        'success' => true,
+        'message' => 'Repas ajouté avec succès.',
+        'id_meal' => $id_meal
+    ];
 }
 function updateMeal(PDO $db, int $id, string $name, string $description, int $nbr_ppl): array
 {
