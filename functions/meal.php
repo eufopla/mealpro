@@ -33,40 +33,25 @@ function createMeal(PDO $db, string $name, string $description, int $nbr_ppl): a
             'message' => 'Tous les champs sont requis.'
         ];
     }
-
     if ($nbr_ppl <= 0) {
         return [
             'success' => false,
             'message' => 'Le nombre de personnes doit être supérieur à zéro.'
         ];
     }
-
     $stmt = $db->prepare("
         INSERT INTO meal (name, description, nbr_ppl)
         VALUES (:name, :description, :nbr_ppl)
     ");
-
     $stmt->execute([
         'name' => $name,
         'description' => $description,
         'nbr_ppl' => $nbr_ppl
     ]);
-
-    $id_meal = (int) $db->lastInsertId();
-
-    createLog(
-        $db,
-        $_SESSION['user_id'],
-        date('Y-m-d H:i:s'),
-        'create',
-        'meal',
-        $id_meal
-    );
-
     return [
         'success' => true,
         'message' => 'Repas ajouté avec succès.',
-        'id_meal' => $id_meal
+        'id_meal' => (int) $db->lastInsertId()
     ];
 }
 function updateMeal(PDO $db, int $id, string $name, string $description, int $nbr_ppl): array
