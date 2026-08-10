@@ -11,6 +11,20 @@ function getMealById(PDO $db, int $id): array
     $stmt->execute(['id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+function checkIfMealExists(PDO $db, int $id_meal): bool
+{
+    $stmt = $db->prepare("
+        SELECT id
+        FROM meal
+        WHERE id = :id_meal
+    ");
+
+    $stmt->execute([
+        'id_meal' => $id_meal
+    ]);
+
+    return $stmt->fetch() !== false;
+}
 function createMeal(PDO $db, string $name, string $description, int $nbr_ppl): array
 {
     if (empty($name) || empty($description) || empty($nbr_ppl)) {

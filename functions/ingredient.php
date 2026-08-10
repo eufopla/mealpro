@@ -6,7 +6,20 @@ function getAllIngredients(PDO $db): array
     $stmt = $db->query("SELECT * FROM ingredient");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+function checkIfIngredientExists(PDO $db, int $id_ingredient): bool
+{
+    $stmt = $db->prepare("
+        SELECT id
+        FROM ingredient
+        WHERE id = :id_ingredient
+    ");
 
+    $stmt->execute([
+        'id_ingredient' => $id_ingredient
+    ]);
+
+    return $stmt->fetch() !== false;
+}
 function getIngredientById(PDO $db, int $id): array
 {
     $stmt = $db->prepare("SELECT name, description FROM ingredient WHERE id = :id");
