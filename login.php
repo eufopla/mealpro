@@ -39,7 +39,8 @@ if (isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<div class="scanlines"></div>
+<div class="grid-bg"></div>
 <section id="profiles" class="screen profiles-screen">
     <header class="brand">
         <h1 class="glitch" data-text="MEALPRO">MEALPRO</h1>

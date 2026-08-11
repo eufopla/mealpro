@@ -28,6 +28,8 @@ $users_info = getAllUserInfo($pdo);
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="scanlines"></div>
+<div class="grid-bg"></div>
 <header>
     <div>
         <h2>
