@@ -15,7 +15,12 @@ function createMealController(
     try {
         $db->beginTransaction();
 
-        $meal = createMeal($db, $name, $description, $nbr_ppl);
+        $meal = createMeal(
+            $db,
+            $name,
+            $description,
+            $nbr_ppl
+        );
 
         if (!$meal['success']) {
             throw new Exception($meal['message']);
@@ -31,9 +36,22 @@ function createMealController(
                 (float) $quantity
             )) {
                 throw new Exception(
-                    "Impossible d'ajouter l'ingrédient $id_ingredient au repas."
+                    "Impossible d'ajouter l'ingrédient au repas."
                 );
             }
+        }
+
+        if (!createLog(
+            $db,
+            $userId,
+            date('Y-m-d H:i:s'),
+            'create',
+            'meal',
+            $id_meal
+        )) {
+            throw new Exception(
+                "Impossible de créer le log."
+            );
         }
 
         $db->commit();
