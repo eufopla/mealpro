@@ -1,0 +1,70 @@
+<?php
+
+session_start();
+
+require_once 'config/database.php';
+require_once 'functions/meal.php';
+require_once 'functions/consumed.php';
+require_once 'functions/ingredient.php';
+require_once 'functions/user.php';
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
+    session_unset();
+    session_destroy();
+
+    header('Location: login.php');
+    exit;
+}
+
+$meals = getAllMeals($pdo);
+$consumedMealsByUser = getConsumedMealsByUserId($pdo, $_SESSION['user_id']);
+$ingredients = getAllIngredients($pdo);
+$users_info = getAllUserInfo($pdo);
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal API</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div>
+        <h2>
+            Dashboard de <?= htmlspecialchars($_SESSION['user_name']) ?>
+        </h2>
+        <h1>Meal API</h1>
+        <p>By Hiro & Eufopla</p>
+    </div>
+</header>
+<br><br>
+<div class="section-title">
+    Repas que vous avez consommé :
+</div>
+<div class="meals-container">
+<?php if (empty($consumedMealsByUser)): ?>
+    <p>Aucun repas trouvé.</p>
+<?php else: ?>
+    <?php foreach ($consumedMealsByUser as $consumedMealByUser): ?>
+        <div class="meal-card">
+            <h3>
+                <?= htmlspecialchars($consumedMealByUser['name']) ?>
+            </h3>
+            <p>
+                <strong>Description :</strong><br>
+                <?= htmlspecialchars($consumedMealByUser['description']) ?>
+            </p>
+            <p>
+                <strong>Nombre de personnes :</strong>
+                <?= htmlspecialchars($consumedMealByUser['nbr_ppl']) ?>
+            </p>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+</div>
+<br><br>
+
+</body>
+</html>
