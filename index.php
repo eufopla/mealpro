@@ -1,11 +1,16 @@
 <?php
 
 session_start();
+
 require_once 'config/database.php';
 require_once 'functions/meal.php';
 require_once 'functions/ingredient.php';
 require_once 'functions/user.php';
-if (!isset($_SESSION['user_id'])) {
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
+    session_unset();
+    session_destroy();
+
     header('Location: login.php');
     exit;
 }
@@ -32,6 +37,11 @@ $users_info = getAllUserInfo($pdo);
         <p>By Hiro & Eufopla</p>
     </div>
 </header>
+<a href="logout.php">
+    <button type="button">
+        Se déconnecter
+    </button>
+</a>
 <button onclick="window.location.href='form/addmeal.php'">
     Ajouter un repas
 </button>
