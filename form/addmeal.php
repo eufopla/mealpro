@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p style="font-size:.7rem;letter-spacing:.2em;color:var(--muted);margin:0;">SESSION ACTIVE</p>
             </div>
         </div>
-        <a href="index.php?profile=<?= htmlspecialchars($profile) ?>" style="font-family:'Share Tech Mono',monospace;font-size:.75rem;letter-spacing:.15em;color:var(--muted);border:1px solid var(--border);padding:.5rem 1rem;border-radius:6px;transition:all .25s;text-decoration:none;" onmouseover="this.style.borderColor='var(--neon)';this.style.color='var(--neon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">← RETOUR</a>
+        <a href="/../mealpro/index.php?profile=<?= htmlspecialchars($profile) ?>" style="font-family:'Share Tech Mono',monospace;font-size:.75rem;letter-spacing:.15em;color:var(--muted);border:1px solid var(--border);padding:.5rem 1rem;border-radius:6px;transition:all .25s;text-decoration:none;" onmouseover="this.style.borderColor='var(--neon)';this.style.color='var(--neon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">← RETOUR</a>
     </div>
 
     <?php if ($success): ?>
