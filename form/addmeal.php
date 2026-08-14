@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p style="font-size:.7rem;letter-spacing:.2em;color:var(--muted);margin:0;">SESSION ACTIVE</p>
             </div>
         </div>
-        <a href="/../mealpro/index.php?profile=<?= htmlspecialchars($profile) ?>" style="font-family:'Share Tech Mono',monospace;font-size:.75rem;letter-spacing:.15em;color:var(--muted);border:1px solid var(--border);padding:.5rem 1rem;border-radius:6px;transition:all .25s;text-decoration:none;" onmouseover="this.style.borderColor='var(--neon)';this.style.color='var(--neon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">← RETOUR</a>
+        <a href="../index.php?profile=<?= htmlspecialchars($profile) ?>" style="font-family:'Share Tech Mono',monospace;font-size:.75rem;letter-spacing:.15em;color:var(--muted);border:1px solid var(--border);padding:.5rem 1rem;border-radius:6px;transition:all .25s;text-decoration:none;" onmouseover="this.style.borderColor='var(--neon)';this.style.color='var(--neon)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">← RETOUR</a>
     </div>
 
     <?php if ($success): ?>
@@ -188,11 +188,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" style="background:rgba(252,238,10,.12);border:1px solid var(--neon);color:var(--neon);padding:.7rem 1.8rem;border-radius:6px;font-family:'Share Tech Mono',monospace;letter-spacing:.15em;cursor:pointer;transition:all .25s;"
                 onmouseover="this.style.boxShadow='0 0 18px var(--neon-soft)';this.style.background='rgba(252,238,10,.2)'"
                 onmouseout="this.style.boxShadow='none';this.style.background='rgba(252,238,10,.12)'">CRÉER LE REPAS</button>
-            <a href="index.php?profile=<?= htmlspecialchars($profile) ?>" style="text-decoration:none;">
-                <button type="button" style="background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);padding:.7rem 1.8rem;border-radius:6px;font-family:'Share Tech Mono',monospace;letter-spacing:.15em;cursor:pointer;transition:all .25s;"
-                    onmouseover="this.style.borderColor='var(--muted)';this.style.color='var(--text)'"
-                    onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">ANNULER</button>
-            </a>
+        <a href="../index.php?profile=<?= htmlspecialchars($profile) ?>" style="text-decoration:none;">
+            <button type="button"
+            style="background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);padding:.7rem 1.8rem;border-radius:6px;font-family:'Share Tech Mono',monospace;letter-spacing:.15em;cursor:pointer;transition:all .25s;"
+            onmouseover="this.style.borderColor='var(--muted)';this.style.color='var(--text)'"
+            onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">ANNULER</button>
+        </a>
         </div>
     </form>
     <?php endif; ?>
