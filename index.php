@@ -47,6 +47,9 @@ $users_info = getAllUserInfo($pdo);
 <button onclick="window.location.href='form/addmeal.php'">
     Ajouter un repas
 </button>
+<button onclick="window.location.href='form/addingredient.php'">
+    Ajouter un ingrédient
+</button>
 <br><br>
 <div class="section-title">
     Liste des repas
@@ -109,27 +112,5 @@ $users_info = getAllUserInfo($pdo);
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
-<div class="section-title">
-    Ajouter un ingrédient
-</div>
-<form method="POST">
-    <strong>Nom de l'ingrédient :</strong>
-    <input 
-        type="text" 
-        name="name"
-        required
-    >
-    <strong>Description :</strong>
-    <textarea name="description"></textarea>
-    <strong>Mesure (g, ml, l) :</strong>
-    <input 
-        type="text" 
-        name="measure"
-        required
-    >
-    <button type="submit">
-        Ajouter l'ingrédient
-    </button>
-</form>
 </body>
 </html>

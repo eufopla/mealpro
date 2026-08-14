@@ -13,21 +13,29 @@ function createMealController(
     int $userId
 ): array {
     try {
-        $db->beginTransaction();
+    $db->beginTransaction();
 
-        $meal = createMeal(
-            $db,
-            $name,
-            $description,
-            $nbr_ppl
+    if (mealAlreadyExists(
+        $db,
+        $name,
+        $description,
+        $nbr_ppl,
+        $ingredients
+    )) {
+        throw new Exception(
+            "Ce repas existe déjà avec exactement les mêmes informations et ingrédients."
         );
-
+    }
+    $meal = createMeal(
+        $db,
+        $name,
+        $description,
+        $nbr_ppl
+    );
         if (!$meal['success']) {
             throw new Exception($meal['message']);
         }
-
         $id_meal = $meal['id_meal'];
-
         foreach ($ingredients as $id_ingredient => $quantity) {
             if (!createLink(
                 $db,
@@ -40,7 +48,6 @@ function createMealController(
                 );
             }
         }
-
         if (!createLog(
             $db,
             $userId,
@@ -53,21 +60,16 @@ function createMealController(
                 "Impossible de créer le log."
             );
         }
-
         $db->commit();
-
         return [
             'success' => true,
             'message' => 'Repas ajouté avec succès.',
             'id_meal' => $id_meal
         ];
-
     } catch (Throwable $e) {
-
         if ($db->inTransaction()) {
             $db->rollBack();
         }
-
         return [
             'success' => false,
             'message' => $e->getMessage()

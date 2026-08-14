@@ -79,4 +79,59 @@ function hardDeleteMeal(PDO $db, int $id): array
     createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'delete', 'meal', $id);
     return ['success' => true, 'message' => 'Repas supprimé avec succès.'];
 }
+function mealAlreadyExists(
+    PDO $db,
+    string $name,
+    string $description,
+    int $nbr_ppl,
+    array $ingredients
+): bool {
+    $newIngredients = [];
+    foreach ($ingredients as $idIngredient => $quantity) {
+        $newIngredients[(int) $idIngredient] = (float) $quantity;
+    }
+    ksort($newIngredients);
+    $stmt = $db->prepare("
+        SELECT id, name, description, nbr_ppl
+        FROM meal
+        WHERE name = :name
+          AND nbr_ppl = :nbr_ppl
+          AND (
+              description = :description
+              OR (description IS NULL AND :description = '')
+          )
+    ");
+    $stmt->execute([
+        ':name' => $name,
+        ':description' => $description,
+        ':nbr_ppl' => $nbr_ppl
+    ]);
+    $meals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (empty($meals)) {
+        return false;
+    }
+    foreach ($meals as $meal) {
+        $stmtIngredients = $db->prepare("
+            SELECT id_ingredient, quantity
+            FROM link
+            WHERE id_meal = :id_meal
+        ");
+        $stmtIngredients->execute([
+            ':id_meal' => $meal['id']
+        ]);
+        $existingIngredients = [];
+        while ($ingredient = $stmtIngredients->fetch(PDO::FETCH_ASSOC)) {
+            $existingIngredients[(int) $ingredient['id_ingredient']] =
+                (float) $ingredient['quantity'];
+        }
+        if (count($existingIngredients) !== count($newIngredients)) {
+            continue;
+        }
+        ksort($existingIngredients);
+        if ($existingIngredients === $newIngredients) {
+            return true;
+        }
+    }
+    return false;
+}
 ?>

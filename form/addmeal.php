@@ -3,27 +3,18 @@
 session_start();
 
 require __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../controllers/meal.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
     header('Location: ../login.php');
     exit;
 }
 
-/*
- * Utilisateur réellement connecté
- */
 $userId = (int) $_SESSION['user_id'];
 $profileName = $_SESSION['user_name'];
 
-/*
- * On garde $profile pour les liens éventuels.
- */
 $profile = $_GET['profile'] ?? $_POST['profile'] ?? '';
 
-/*
- * Configuration visuelle
- * On garde ton système de couleurs.
- */
 $neon = match ($profileName) {
     'CHATOUNI', 'Chatouni', 'chatouni' => '#FCEE0A',
     'LAPINOU', 'Lapinou', 'lapinou' => '#00FF9C',
@@ -42,66 +33,43 @@ $avatar = match ($profileName) {
     default => '',
 };
 
-// Récupération des ingrédients directement depuis MySQL
-$ingredients = $pdo->query('SELECT id, name, measure FROM ingredient ORDER BY id ASC')->fetchAll();
+$ingredients = $pdo
+    ->query('SELECT id, name, measure FROM ingredient ORDER BY id ASC')
+    ->fetchAll();
 
-// Traitement du formulaire
 $error = null;
 $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $name = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $nbrPpl = (int) ($_POST['nbr_ppl'] ?? 2);
-    $selectedIngredients = $_POST['ingredients'] ?? []; // [id_ingredient => quantity]
+    $selectedIngredients = $_POST['ingredients'] ?? [];
 
     if ($name === '') {
+
         $error = 'Le nom du repas est obligatoire.';
+
     } elseif (empty($selectedIngredients)) {
+
         $error = 'Sélectionne au moins un ingrédient.';
+
     } else {
-        try {
-            $pdo->beginTransaction();
 
-            // 1. Créer le repas
-            $stmt = $pdo->prepare(
-                'INSERT INTO meal (name, description, nbr_ppl) VALUES (:name, :description, :nbr_ppl)'
-            );
-            $stmt->execute([
-                ':name' => $name,
-                ':description' => $description !== '' ? $description : null,
-                ':nbr_ppl' => $nbrPpl,
-            ]);
-            $mealId = (int) $pdo->lastInsertId();
+        $result = createMealController(
+            $pdo,
+            $name,
+            $description,
+            $nbrPpl,
+            $selectedIngredients,
+            $userId
+        );
 
-            // 2. Créer les liaisons ingrédient <-> repas dans `link`
-            $stmtLink = $pdo->prepare(
-                'INSERT INTO link (id_meal, id_ingredient, quantity) VALUES (:id_meal, :id_ingredient, :quantity)'
-            );
-            foreach ($selectedIngredients as $ingId => $quantity) {
-                $stmtLink->execute([
-                    ':id_meal' => $mealId,
-                    ':id_ingredient' => (int) $ingId,
-                    ':quantity' => (int) $quantity,
-                ]);
-            }
-
-            // 3. Log de l'action
-            $stmtLog = $pdo->prepare(
-                'INSERT INTO log (id_user, ac, table_name, table_id) VALUES (:id_user, :ac, :table_name, :table_id)'
-            );
-            $stmtLog->execute([
-                ':id_user' => $userId,
-                ':ac' => 'create',
-                ':table_name' => 'meal',
-                ':table_id' => $mealId,
-            ]);
-
-            $pdo->commit();
+        if ($result['success']) {
             $success = true;
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            $error = 'Erreur lors de l\'enregistrement : ' . $e->getMessage();
+        } else {
+            $error = $result['message'];
         }
     }
 }
@@ -147,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($success): ?>
     <div style="width:100%;max-width:680px;margin:0 auto;padding:1.2rem 1.5rem;background:rgba(0,255,156,.08);border:1px solid var(--neon);border-radius:8px;text-align:center;box-shadow:0 0 20px var(--neon-soft);">
         <p style="font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:.2em;color:var(--neon);text-shadow:0 0 10px var(--neon-soft);">REPAS CRÉÉ AVEC SUCCÈS</p>
-        <a href="index.php?profile=<?= htmlspecialchars($profile) ?>" style="display:inline-block;margin-top:.8rem;font-family:'Share Tech Mono',monospace;letter-spacing:.15em;color:var(--neon);text-decoration:none;border-bottom:1px solid var(--neon);">→ RETOUR AU TABLEAU DE BORD</a>
+        <a href="../index.php?profile=<?= htmlspecialchars($profile) ?>" style="display:inline-block;margin-top:.8rem;font-family:'Share Tech Mono',monospace;letter-spacing:.15em;color:var(--neon);text-decoration:none;border-bottom:1px solid var(--neon);">→ RETOUR AU TABLEAU DE BORD</a>
     </div>
     <?php else: ?>
 
