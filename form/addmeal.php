@@ -1,29 +1,46 @@
 <?php
+
+session_start();
+
 require __DIR__ . '/../config/database.php';
 
-$profile = $_GET['profile'] ?? 'inconnu';
-$profileName = match($profile) {
-    'chatouni' => 'CHATOUNI',
-    'lapinou' => 'LAPINOU',
-    default => 'INCONNU',
-};
-$neon = match($profile) {
-    'chatouni' => '#FCEE0A',
-    'lapinou' => '#00FF9C',
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
+/*
+ * Utilisateur réellement connecté
+ */
+$userId = (int) $_SESSION['user_id'];
+$profileName = $_SESSION['user_name'];
+
+/*
+ * On garde $profile pour les liens éventuels.
+ */
+$profile = $_GET['profile'] ?? $_POST['profile'] ?? '';
+
+/*
+ * Configuration visuelle
+ * On garde ton système de couleurs.
+ */
+$neon = match ($profileName) {
+    'CHATOUNI', 'Chatouni', 'chatouni' => '#FCEE0A',
+    'LAPINOU', 'Lapinou', 'lapinou' => '#00FF9C',
     default => '#00FF9C',
 };
-$neonSoft = match($profile) {
-    'chatouni' => 'rgba(252,238,10,.35)',
-    'lapinou' => 'rgba(0,255,156,.35)',
+
+$neonSoft = match ($profileName) {
+    'CHATOUNI', 'Chatouni', 'chatouni' => 'rgba(252,238,10,.35)',
+    'LAPINOU', 'Lapinou', 'lapinou' => 'rgba(0,255,156,.35)',
     default => 'rgba(0,255,156,.35)',
 };
-$avatar = match($profile) {
-    'chatouni' => 'assets/img/cat.jpeg',
-    'lapinou' => 'assets/img/rabbit.jpeg',
+
+$avatar = match ($profileName) {
+    'CHATOUNI', 'Chatouni', 'chatouni' => '../assets/img/cat.jpeg',
+    'LAPINOU', 'Lapinou', 'lapinou' => '../assets/img/rabbit.jpeg',
     default => '',
 };
-// id_user selon la table `user` du dump (1 = Lapinou, 2 = Chatouni)
-$userId = $profile === 'chatouni' ? 2 : 1;
 
 // Récupération des ingrédients directement depuis MySQL
 $ingredients = $pdo->query('SELECT id, name, measure FROM ingredient ORDER BY id ASC')->fetchAll();
