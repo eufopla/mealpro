@@ -1,11 +1,11 @@
 <?php
-
 require_once __DIR__ . '/../functions/ingredient.php';
 require_once __DIR__ . '/../functions/link.php';
 require_once __DIR__ . '/../functions/log.php';
 
 function createIngredientController(
     PDO $db,
+    int $userId,
     string $name,
     string $description,
     string $measure,
@@ -19,25 +19,29 @@ function createIngredientController(
     int $g_salt_for_100m
 ): array {
     try {
-    $db->beginTransaction();
+        $db->beginTransaction();
 
-    $ingredient = createIngredient(
-        $name,
-        $description,
-        $measure,
-        $g_protein_for_100m,
-        $k_calories_for_100m,
-        $g_fat_for_100m,
-        $g_saturated_fat_for_100m,
-        $g_fiber_for_100m,
-        $g_carbohydrate_for_100m,
-        $g_sugars_for_100m,
-        $g_salt_for_100m
-    );
+        $ingredient = createIngredient(
+            $db,
+            $name,
+            $description,
+            $measure,
+            $g_protein_for_100m,
+            $k_calories_for_100m,
+            $g_fat_for_100m,
+            $g_saturated_fat_for_100m,
+            $g_fiber_for_100m,
+            $g_carbohydrate_for_100m,
+            $g_sugars_for_100m,
+            $g_salt_for_100m
+        );
+
         if (!$ingredient['success']) {
             throw new Exception($ingredient['message']);
         }
+
         $id_ingredient = $ingredient['id_ingredient'];
+
         if (!createLog(
             $db,
             $userId,
@@ -46,11 +50,11 @@ function createIngredientController(
             'ingredient',
             $id_ingredient
         )) {
-            throw new Exception(
-                "Impossible de créer le log."
-            );
+            throw new Exception("Impossible de créer le log.");
         }
+
         $db->commit();
+
         return [
             'success' => true,
             'message' => 'Ingrédient ajouté avec succès.',
@@ -60,6 +64,7 @@ function createIngredientController(
         if ($db->inTransaction()) {
             $db->rollBack();
         }
+
         return [
             'success' => false,
             'message' => $e->getMessage()
