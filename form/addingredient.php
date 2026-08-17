@@ -3,7 +3,7 @@
 session_start();
 
 require __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../controllers/meal.php';
+require_once __DIR__ . '/../controllers/ingredient.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
     header('Location: ../login.php');
@@ -42,24 +42,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
     $nbrPpl = (int) ($_POST['nbr_ppl'] ?? 2);
     $selectedIngredients = $_POST['ingredients'] ?? [];
-
     if ($name === '') {
-
-        $error = 'Le nom du repas est obligatoire.';
-
-    } elseif (empty($selectedIngredients)) {
-
-        $error = 'Sélectionne au moins un ingrédient.';
-
+        $error = 'Le nom de l ingrédient est obligatoire.';
     } else {
 
-        $result = createMealController(
+        $result = createIngredientController(
             $pdo,
             $name,
             $description,
-            $nbrPpl,
-            $selectedIngredients,
-            $userId
+            $measure,
+            $g_protein_for_100m,
+            $k_calories_for_100m,
+            $g_fat_for_100m,
+            $g_saturated_fat_for_100m,
+            $g_fiber_for_100m,
+            $g_carbohydrate_for_100m,
+            $g_sugars_for_100m,
+            $g_salt_for_100m
         );
 
         if ($result['success']) {
@@ -77,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <link rel="stylesheet" href="../style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MEALPRO // Nouveau repas</title>
+    <title>MEALPRO // Nouveau ingrédient</title>
     <style>
       :root { --neon: <?= $neon ?>; --neon-soft: <?= $neonSoft ?>; }
       .dash-page { --neon: <?= $neon ?>; --neon-soft: <?= $neonSoft ?>; }
@@ -90,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="screen active dash-page" style="opacity:1;pointer-events:auto;transform:scale(1);padding:2rem;gap:1.2rem;overflow-y:auto;align-items:stretch;justify-content:flex-start;">
     <header class="brand" style="margin-bottom:.5rem;">
         <h1 class="glitch" data-text="MEALPRO">MEALPRO</h1>
-        <p class="brand-sub">// NOUVEAU REPAS</p>
+        <p class="brand-sub">// NOUVEAU INGREDIENT</p>
     </header>
 
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:space-between;width:100%;max-width:680px;margin:0 auto;">

@@ -26,10 +26,10 @@ function getIngredientById(PDO $db, int $id): array
     $stmt->execute(['id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
-function createIngredient(PDO $db, string $name, string $description, string $measure): array
+function createIngredient(PDO $db, string $name, string $description, string $measure, int $g_protein_for_100m, int $k_calories_for_100m, int $g_fat_for_100m, int $g_saturated_fat_for_100m, int $g_fiber_for_100m, int $g_carbohydrate_for_100m, int $g_sugars_for_100m, int $g_salt_for_100m): array
 {
     if (empty($name) || empty($description) || empty($measure)) {
-        return ['success' => false, 'message' => 'Tous les champs sont requis.'];
+        return ['success' => false, 'message' => 'Certains champs sont requis.'];
     }
     else if ($measure !== 'g' && $measure !== 'ml' && $measure !== 'l') {
         return ['success' => false, 'message' => 'Le champ de mesure est incorrect.'];
