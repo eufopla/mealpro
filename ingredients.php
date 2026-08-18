@@ -6,6 +6,7 @@ require_once 'config/database.php';
 require_once 'functions/meal.php';
 require_once 'functions/ingredient.php';
 require_once 'functions/user.php';
+require_once 'controllers/ingredient.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
     session_unset();
@@ -14,7 +15,20 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
     header('Location: login.php');
     exit;
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_ingredient_id'])) {
+    $result = hardDeleteIngredientController(
+        $pdo,
+        (int) $_POST['delete_ingredient_id'],
+        (int) $_SESSION['user_id']
+    );
 
+    if ($result['success']) {
+        header('Location: ingredients.php');
+        exit;
+    }
+
+    $error = $result['message'];
+}
 $meals = getAllMeals($pdo);
 $ingredients = getAllIngredients($pdo);
 $users_info = getAllUserInfo($pdo);
@@ -92,6 +106,10 @@ $users_info = getAllUserInfo($pdo);
             <?php if ($ingredient['g_salt_for_100m'] != 0): ?>
                 <p><?= rtrim(rtrim(number_format($ingredient['g_salt_for_100m'], 2, '.', ''), '0'), '.') ?> g de Sel</p>
             <?php endif; ?>
+            <form method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cet ingredient ?');">
+            <input type="hidden" name="delete_ingredient_id" value="<?= (int) $ingredient['id'] ?>">
+            <button type="submit">Supprimer</button>
+            </form>
         </div>
         <br><br>
     <?php endforeach; ?>

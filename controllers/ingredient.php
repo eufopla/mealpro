@@ -58,3 +58,45 @@ function createIngredientController(
         ];
     }
 }
+function hardDeleteIngredientController(PDO $db, int $id,
+    int $userId
+): array {
+        try {
+        $db->beginTransaction();
+        if (!checkIfIngredientExists($db, $id)) {
+            throw new Exception("Cet ingredient n'existe pas.");
+        }
+        $stmt = $db->prepare("DELETE FROM link WHERE id_ingredient = :id_ingredient");
+        if (!$stmt->execute(['id_ingredient' => $id])) {
+            throw new Exception("Impossible de supprimer les liens.");
+        }
+        $deletedIngredient = hardDeleteIngredient($db, $id);
+        if (!$deletedIngredient['success']) {
+            throw new Exception($deletedIngredient['message']);
+        }
+        if (!createLog(
+            $db,
+            $userId,
+            date('Y-m-d H:i:s'),
+            'delete',
+            'ingredient',
+            $id
+        )) {
+            throw new Exception("Impossible de créer le log.");
+        }
+        $db->commit();
+        return [
+            'success' => true,
+            'message' => 'Ingredient supprimé avec succès.',
+            'id_ingredient' => $id
+        ];
+    } catch (Throwable $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    }
+}
