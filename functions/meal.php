@@ -2,7 +2,7 @@
 require_once 'log.php';
 function getAllMeals(PDO $db): array
 {
-    $stmt = $db->query("SELECT name, description, nbr_ppl FROM meal");
+    $stmt = $db->query("SELECT * FROM meal");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 function getMealById(PDO $db, int $id): array

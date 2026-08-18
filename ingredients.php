@@ -39,9 +39,9 @@ $users_info = getAllUserInfo($pdo);
         <p>By Hiro & Eufopla</p>
     </div>
 </header>
-<a href="logout.php">
+<a href="index.php">
     <button type="button">
-        Se déconnecter
+        Retour
     </button>
 </a>
 <br><br>
@@ -53,30 +53,25 @@ $users_info = getAllUserInfo($pdo);
     Ajouter un ingrédient
 </button>
 <br><br>
-<button onclick="window.location.href='meals.php'">
-    Afficher la liste des repas
-</button>
-<br><br>
-<button onclick="window.location.href='ingredients.php'">
-    Afficher la liste des ingrédients
-</button>
-<br><br>
-
 <div class="section-title">
-    Liste des utilisateurs
+    Liste des ingrédients
 </div>
 <div class="meals-container">
-<?php if (empty($users_info)): ?>
-    <p>Aucun utilisateur trouvé.</p>
+<?php if (empty($ingredients)): ?>
+    <p>Aucun ingrédient trouvé.</p>
 <?php else: ?>
-    <?php foreach ($users_info as $user): ?>
+    <?php foreach ($ingredients as $ingredient): ?>
         <div class="meal-card">
             <h3>
-                <?= htmlspecialchars($user['name']) ?>
+                <?= htmlspecialchars($ingredient['name']) ?>
             </h3>
+            <p>
+                <?= htmlspecialchars($ingredient['description']) ?>
+            </p>
         </div>
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
+<br><br>
 </body>
 </html>
