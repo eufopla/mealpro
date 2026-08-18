@@ -6,6 +6,7 @@ require_once 'config/database.php';
 require_once 'functions/meal.php';
 require_once 'functions/ingredient.php';
 require_once 'functions/user.php';
+require_once 'controllers/meal.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
     session_unset();
@@ -13,6 +14,21 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
 
     header('Location: login.php');
     exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_meal_id'])) {
+    $result = hardDeleteMealController(
+        $pdo,
+        (int) $_POST['delete_meal_id'],
+        (int) $_SESSION['user_id']
+    );
+
+    if ($result['success']) {
+        header('Location: meals.php');
+        exit;
+    }
+
+    $error = $result['message'];
 }
 
 $meals = getAllMeals($pdo);
@@ -94,6 +110,10 @@ $users_info = getAllUserInfo($pdo);
             <?php if ($nutriments['g_salt'] != 0): ?>
                 <p><?= rtrim(rtrim(number_format($nutriments['g_salt'], 2, '.', ''), '0'), '.') ?> g de Sel</p>
             <?php endif; ?>
+            <form method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce repas ?');">
+            <input type="hidden" name="delete_meal_id" value="<?= (int) $meal['id'] ?>">
+            <button type="submit">Supprimer</button>
+            </form>
         </div>
         <br><br>
     <?php endforeach; ?>

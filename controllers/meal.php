@@ -94,6 +94,16 @@ function hardDeleteMealController(
         if (!$deletedMeal['success']) {
             throw new Exception($deletedMeal['message']);
         }
+        if (!createLog(
+            $db,
+            $userId,
+            date('Y-m-d H:i:s'),
+            'delete',
+            'meal',
+            $id
+        )) {
+            throw new Exception("Impossible de créer le log.");
+        }
         $db->commit();
         return [
             'success' => true,
