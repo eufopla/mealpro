@@ -95,6 +95,7 @@ $users_info = getAllUserInfo($pdo);
                 <p><?= rtrim(rtrim(number_format($nutriments['g_salt'], 2, '.', ''), '0'), '.') ?> g de Sel</p>
             <?php endif; ?>
         </div>
+        <br><br>
     <?php endforeach; ?>
 <?php endif; ?>
 </div>

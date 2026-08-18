@@ -68,7 +68,32 @@ $users_info = getAllUserInfo($pdo);
             <p>
                 <?= htmlspecialchars($ingredient['description']) ?>
             </p>
+            <?php if ($ingredient['g_protein_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['g_protein_for_100m'], 2, '.', ''), '0'), '.') ?> g de Protéine</p>
+            <?php endif; ?>
+            <?php if ($ingredient['k_calories_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['k_calories_for_100m'], 2, '.', ''), '0'), '.') ?> kcal</p>
+            <?php endif; ?>
+            <?php if ($ingredient['g_fat_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['g_fat_for_100m'], 2, '.', ''), '0'), '.') ?> g de Lipides</p>
+            <?php endif; ?>
+            <?php if ($ingredient['g_saturated_fat_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['g_saturated_fat_for_100m'], 2, '.', ''), '0'), '.') ?> g d'Acides gras saturés</p>
+            <?php endif; ?>
+            <?php if ($ingredient['g_fiber_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['g_fiber_for_100m'], 2, '.', ''), '0'), '.') ?> g de Fibres</p>
+            <?php endif; ?>
+            <?php if ($ingredient['g_carbohydrate_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['g_carbohydrate_for_100m'], 2, '.', ''), '0'), '.') ?> g de Glucides</p>
+            <?php endif; ?>
+            <?php if ($ingredient['g_sugar_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['g_sugar_for_100m'], 2, '.', ''), '0'), '.') ?> g de Sucres</p>
+            <?php endif; ?>
+            <?php if ($ingredient['g_salt_for_100m'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($ingredient['g_salt_for_100m'], 2, '.', ''), '0'), '.') ?> g de Sel</p>
+            <?php endif; ?>
         </div>
+        <br><br>
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
