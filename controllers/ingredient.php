@@ -15,7 +15,7 @@ function createIngredientController(
     int $g_saturated_fat_for_100m,
     int $g_fiber_for_100m,
     int $g_carbohydrate_for_100m,
-    int $g_sugars_for_100m,
+    int $g_sugar_for_100m,
     int $g_salt_for_100m
 ): array {
     try {
@@ -32,7 +32,7 @@ function createIngredientController(
             $g_saturated_fat_for_100m,
             $g_fiber_for_100m,
             $g_carbohydrate_for_100m,
-            $g_sugars_for_100m,
+            $g_sugar_for_100m,
             $g_salt_for_100m
         );
 
@@ -40,25 +40,12 @@ function createIngredientController(
             throw new Exception($ingredient['message']);
         }
 
-        $id_ingredient = $ingredient['id_ingredient'];
-
-        if (!createLog(
-            $db,
-            $userId,
-            date('Y-m-d H:i:s'),
-            'create',
-            'ingredient',
-            $id_ingredient
-        )) {
-            throw new Exception("Impossible de créer le log.");
-        }
-
         $db->commit();
 
         return [
             'success' => true,
             'message' => 'Ingrédient ajouté avec succès.',
-            'id_ingredient' => $id_ingredient
+            'id_ingredient' => $ingredient['id_ingredient']
         ];
     } catch (Throwable $e) {
         if ($db->inTransaction()) {

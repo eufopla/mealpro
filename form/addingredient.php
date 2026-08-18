@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $g_saturated_fat_for_100m = (int) ($_POST['g_saturated_fat_for_100m'] ?? 0);
     $g_fiber_for_100m = (int) ($_POST['g_fiber_for_100m'] ?? 0);
     $g_carbohydrate_for_100m = (int) ($_POST['g_carbohydrate_for_100m'] ?? 0);
-    $g_sugars_for_100m = (int) ($_POST['g_sugars_for_100m'] ?? 0);
+    $g_sugar_for_100m = (int) ($_POST['g_sugar_for_100m'] ?? 0);
     $g_salt_for_100m = (int) ($_POST['g_salt_for_100m'] ?? 0);
     if ($name === '') {
         $error = 'Le nom de l ingrédient est obligatoire.';
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $g_saturated_fat_for_100m,
             $g_fiber_for_100m,
             $g_carbohydrate_for_100m,
-            $g_sugars_for_100m,
+            $g_sugar_for_100m,
             $g_salt_for_100m
         );
         if ($result['success']) {
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div style="display:flex;flex-direction:column;gap:.4rem;">
                 <label style="font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:.12em;font-size:.75rem;color:var(--neon);">SUCRES / 100M</label>
-                <input type="number" name="g_sugars_for_100m" min="0" value="<?= htmlspecialchars($_POST['g_sugars_for_100m'] ?? '0') ?>" required
+                <input type="number" name="g_sugar_for_100m" min="0" value="<?= htmlspecialchars($_POST['g_sugars_for_100m'] ?? '0') ?>" required
                     style="background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--text);padding:.7rem;border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:.9rem;"
                     onfocus="this.style.borderColor='var(--neon)';this.style.boxShadow='0 0 12px var(--neon-soft)'"
                     onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'" />

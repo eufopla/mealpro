@@ -26,7 +26,7 @@ function getIngredientById(PDO $db, int $id): array
     $stmt->execute(['id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
-function createIngredient(PDO $db, string $name, string $description, string $measure, int $g_protein_for_100m, int $k_calories_for_100m, int $g_fat_for_100m, int $g_saturated_fat_for_100m, int $g_fiber_for_100m, int $g_carbohydrate_for_100m, int $g_sugars_for_100m, int $g_salt_for_100m): array
+function createIngredient(PDO $db, string $name, string $description, string $measure, int $g_protein_for_100m, int $k_calories_for_100m, int $g_fat_for_100m, int $g_saturated_fat_for_100m, int $g_fiber_for_100m, int $g_carbohydrate_for_100m, int $g_sugar_for_100m, int $g_salt_for_100m): array
 {
     if (empty($name) || empty($description) || empty($measure)) {
         return ['success' => false, 'message' => 'Certains champs sont requis.'];
@@ -35,10 +35,64 @@ function createIngredient(PDO $db, string $name, string $description, string $me
         return ['success' => false, 'message' => 'Le champ de mesure est incorrect.'];
     }
     else {
-        $stmt = $db->prepare("INSERT INTO ingredient (name, description, measure) VALUES (:name, :description, :measure)");
-        $stmt->execute(['name' => $name, 'description' => $description, 'measure' => $measure]);
-        createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'create', 'ingredient', $db->lastInsertId());
-        return ['success' => true, 'message' => 'Ingrédient ajouté avec succès.'];
+        $stmt = $db->prepare("
+            INSERT INTO ingredient (
+                name,
+                description,
+                measure,
+                g_protein_for_100m,
+                k_calories_for_100m,
+                g_fat_for_100m,
+                g_saturated_fat_for_100m,
+                g_fiber_for_100m,
+                g_carbohydrate_for_100m,
+                g_sugar_for_100m,
+                g_salt_for_100m
+            ) VALUES (
+                :name,
+                :description,
+                :measure,
+                :g_protein_for_100m,
+                :k_calories_for_100m,
+                :g_fat_for_100m,
+                :g_saturated_fat_for_100m,
+                :g_fiber_for_100m,
+                :g_carbohydrate_for_100m,
+                :g_sugar_for_100m,
+                :g_salt_for_100m
+            )
+        ");
+
+        $stmt->execute([
+            ':name' => $name,
+            ':description' => $description,
+            ':measure' => $measure,
+            ':g_protein_for_100m' => $g_protein_for_100m,
+            ':k_calories_for_100m' => $k_calories_for_100m,
+            ':g_fat_for_100m' => $g_fat_for_100m,
+            ':g_saturated_fat_for_100m' => $g_saturated_fat_for_100m,
+            ':g_fiber_for_100m' => $g_fiber_for_100m,
+            ':g_carbohydrate_for_100m' => $g_carbohydrate_for_100m,
+            ':g_sugar_for_100m' => $g_sugar_for_100m,
+            ':g_salt_for_100m' => $g_salt_for_100m
+        ]);
+
+        $id_ingredient = (int) $db->lastInsertId();
+
+        createLog(
+            $db,
+            $_SESSION['user_id'],
+            date('Y-m-d H:i:s'),
+            'create',
+            'ingredient',
+            $id_ingredient
+        );
+
+        return [
+            'success' => true,
+            'message' => 'Ingrédient ajouté avec succès.',
+            'id_ingredient' => $id_ingredient
+        ];
     }
 }
 function updateIngredient(PDO $db, int $id, string $name, string $description, string $measure, float $g_protein_for_100m, float $k_calories_for_100m, float $g_fat_for_100m, float $g_saturated_fat_for_100m, float $g_fiber_for_100m, float $g_carbohydrate_for_100m, float $g_sugars_for_100m, float $g_salt_for_100m): array
