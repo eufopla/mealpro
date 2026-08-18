@@ -99,7 +99,6 @@ function hardDeleteMeal(PDO $db, int $id): array
 {
     $stmt = $db->prepare("DELETE FROM meal WHERE id = :id");
     $stmt->execute(['id' => $id]);
-    createLog($db, $_SESSION['user_id'], date('Y-m-d H:i:s'), 'delete', 'meal', $id);
     return ['success' => true, 'message' => 'Repas supprimé avec succès.'];
 }
 function mealAlreadyExists(

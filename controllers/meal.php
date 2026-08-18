@@ -76,3 +76,37 @@ function createMealController(
         ];
     }
 }
+function hardDeleteMealController(
+    PDO $db,
+    int $id,
+    int $userId
+): array {
+    try {
+        $db->beginTransaction();
+        if (!checkIfMealExists($db, $id)) {
+            throw new Exception("Ce repas n'existe pas.");
+        }
+        $stmt = $db->prepare("DELETE FROM link WHERE id_meal = :id_meal");
+        if (!$stmt->execute(['id_meal' => $id])) {
+            throw new Exception("Impossible de supprimer les liens.");
+        }
+        $deletedMeal = hardDeleteMeal($db, $id);
+        if (!$deletedMeal['success']) {
+            throw new Exception($deletedMeal['message']);
+        }
+        $db->commit();
+        return [
+            'success' => true,
+            'message' => 'Repas supprimé avec succès.',
+            'id_meal' => $id
+        ];
+    } catch (Throwable $e) {
+        if ($db->inTransaction()) {
+            $db->rollBack();
+        }
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    }
+}
