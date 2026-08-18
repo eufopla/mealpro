@@ -5,6 +5,29 @@ function getAllMeals(PDO $db): array
     $stmt = $db->query("SELECT * FROM meal");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+function getNutrimentForMeal(PDO $db, int $meal_id): array
+{
+    $stmt = $db->prepare("
+        SELECT
+            COALESCE(SUM(ingredient.g_protein_for_100m * link.quantity / 100), 0) AS g_protein,
+            COALESCE(SUM(ingredient.k_calories_for_100m * link.quantity / 100), 0) AS k_calories,
+            COALESCE(SUM(ingredient.g_fat_for_100m * link.quantity / 100), 0) AS g_fat,
+            COALESCE(SUM(ingredient.g_saturated_fat_for_100m * link.quantity / 100), 0) AS g_saturated_fat,
+            COALESCE(SUM(ingredient.g_fiber_for_100m * link.quantity / 100), 0) AS g_fiber,
+            COALESCE(SUM(ingredient.g_carbohydrate_for_100m * link.quantity / 100), 0) AS g_carbohydrate,
+            COALESCE(SUM(ingredient.g_sugar_for_100m * link.quantity / 100), 0) AS g_sugar,
+            COALESCE(SUM(ingredient.g_salt_for_100m * link.quantity / 100), 0) AS g_salt
+        FROM link
+        INNER JOIN ingredient ON ingredient.id = link.id_ingredient
+        WHERE link.id_meal = :meal_id
+    ");
+
+    $stmt->execute([
+        'meal_id' => $meal_id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 function getMealById(PDO $db, int $id): array
 {
     $stmt = $db->prepare("SELECT name, description, nbr_ppl FROM meal WHERE id = :id");

@@ -59,44 +59,43 @@ $users_info = getAllUserInfo($pdo);
     <p>Aucun repas trouvé.</p>
 <?php else: ?>
     <?php foreach ($meals as $meal): ?>
-    <div class="meal-card">
-        <h3>
-            <?= htmlspecialchars($meal['name']) ?>
-        </h3>
-        <p>
-            <strong>Description :</strong><br>
-            <?= htmlspecialchars($meal['description']) ?>
-        </p>
-        <p>
-            <strong>Nombre de personnes :</strong>
-            <?= htmlspecialchars($meal['nbr_ppl']) ?>
-        </p>
-        <?php if ($meal['g_protein_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['g_protein_for_100m']) ?> g de Protéine</p>
-        <?php endif; ?>
-        <?php if ($meal['k_calories_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['k_calories_for_100m']) ?> kcal</p>
-        <?php endif; ?>
-        <?php if ($meal['g_fat_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['g_fat_for_100m']) ?> g de Lipides</p>
-        <?php endif; ?>
-        <?php if ($meal['g_saturated_fat_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['g_saturated_fat_for_100m']) ?> g d'Acides gras saturés</p>
-        <?php endif; ?>
-        <?php if ($meal['g_fiber_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['g_fiber_for_100m']) ?> g de Fibres</p>
-        <?php endif; ?>
-        <?php if ($meal['g_carbohydrate_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['g_carbohydrate_for_100m']) ?> g de Glucides</p>
-        <?php endif; ?>
-        <?php if ($meal['g_sugar_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['g_sugar_for_100m']) ?> g de Sucres</p>
-        <?php endif; ?>
-        <?php if ($meal['g_salt_for_100m'] != 0): ?>
-            <p><?= htmlspecialchars($meal['g_salt_for_100m']) ?> g de Sel</p>
-        <?php endif; ?>
-    </div>
-<?php endforeach; ?>
+        <?php $nutriments = getNutrimentForMeal($pdo, $meal['id']); ?>
+        <div class="meal-card">
+            <h3>
+                <?= htmlspecialchars($meal['name']) ?>
+            </h3>
+            <p>
+                <?= htmlspecialchars($meal['description']) ?>
+            </p>
+            <p>
+                <?= htmlspecialchars($meal['nbr_ppl']) ?> pers.
+            </p>
+            <?php if ($nutriments['g_protein'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['g_protein'], 2, '.', ''), '0'), '.') ?> g de Protéine</p>
+            <?php endif; ?>
+            <?php if ($nutriments['k_calories'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['k_calories'], 2, '.', ''), '0'), '.') ?> kcal</p>
+            <?php endif; ?>
+            <?php if ($nutriments['g_fat'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['g_fat'], 2, '.', ''), '0'), '.') ?> g de Lipides</p>
+            <?php endif; ?>
+            <?php if ($nutriments['g_saturated_fat'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['g_saturated_fat'], 2, '.', ''), '0'), '.') ?> g d'Acides gras saturés</p>
+            <?php endif; ?>
+            <?php if ($nutriments['g_fiber'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['g_fiber'], 2, '.', ''), '0'), '.') ?> g de Fibres</p>
+            <?php endif; ?>
+            <?php if ($nutriments['g_carbohydrate'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['g_carbohydrate'], 2, '.', ''), '0'), '.') ?> g de Glucides</p>
+            <?php endif; ?>
+            <?php if ($nutriments['g_sugar'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['g_sugar'], 2, '.', ''), '0'), '.') ?> g de Sucres</p>
+            <?php endif; ?>
+            <?php if ($nutriments['g_salt'] != 0): ?>
+                <p><?= rtrim(rtrim(number_format($nutriments['g_salt'], 2, '.', ''), '0'), '.') ?> g de Sel</p>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
 <?php endif; ?>
 </div>
 <br><br>
