@@ -11,6 +11,10 @@ function getConsumedMealsByUserId(PDO $db, int $id): array
     $stmt->execute(['id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
-
+function createConsumption(PDO $db, $iduser, $idmeal, $datetime): array
+{
+    $stmt = $db->prepare("INSERT INTO consumed (id_user, id_meal, date_time) VALUES (:id_user, :id_meal, :date_time)");
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 ?>
