@@ -44,6 +44,9 @@ $users_info = getAllUserInfo($pdo);
 <body>
     <div class="scanlines"></div>
 <div class="grid-bg"></div>
+<?php require_once 'sidebar.php'; ?>
+
+<div class="page-with-sidebar">
 <header>
     <div>
         <h2>
@@ -114,6 +117,7 @@ $users_info = getAllUserInfo($pdo);
         <br><br>
     <?php endforeach; ?>
 <?php endif; ?>
+</div>
 </div>
 <br><br>
 </body>

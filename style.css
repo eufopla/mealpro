@@ -431,3 +431,14 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 560px) {
   .profiles { gap: 2rem; }
 }
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 200px;
+    height: 100vh;
+}
+
+.page-with-sidebar {
+    margin-left: 200px;
+}

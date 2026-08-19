@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-
 require_once 'config/database.php';
 require_once 'functions/meal.php';
 require_once 'functions/ingredient.php';
@@ -30,6 +29,9 @@ $users_info = getAllUserInfo($pdo);
 <body>
     <div class="scanlines"></div>
 <div class="grid-bg"></div>
+<?php require_once 'sidebar.php'; ?>
+
+<div class="page-with-sidebar">
 <header>
     <div>
         <h2>
@@ -77,6 +79,7 @@ $users_info = getAllUserInfo($pdo);
         </div>
     <?php endforeach; ?>
 <?php endif; ?>
+</div>
 </div>
 </body>
 </html>
