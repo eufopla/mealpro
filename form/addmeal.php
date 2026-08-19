@@ -90,7 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="scanlines"></div>
 <div class="grid-bg"></div>
+<?php require_once 'sidebar.php'; ?>
 
+<div class="page-with-sidebar">
 <section class="screen active dash-page" style="opacity:1;pointer-events:auto;transform:scale(1);padding:2rem;gap:1.2rem;overflow-y:auto;align-items:stretch;justify-content:flex-start;">
     <header class="brand" style="margin-bottom:.5rem;">
         <h1 class="glitch" data-text="MEALPRO">MEALPRO</h1>
@@ -298,5 +300,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     displaySelected();
     displayResults();
 </script>
+</div>
 </body>
 </html>

@@ -3,8 +3,10 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <aside class="sidebar">
     <div class="sidebar-header">
-        <span class="sidebar-logo">MEALPRO</span>
-        <span class="sidebar-line"></span>
+        <a href="/index.php" class="<?= $currentPage === 'index.php' ? 'active' : '' ?>">
+            <span class="sidebar-icon"></span>
+            <span>MEALPRO</span>
+        </a>
     </div>
     <nav class="sidebar-nav">
         <a href="/profile/calendar.php" class="<?= $currentPage === 'calendar.php' ? 'active' : '' ?>">

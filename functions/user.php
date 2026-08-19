@@ -1,5 +1,5 @@
 <?php
-require_once 'functions/log.php';
+require_once 'log.php';
 function checkIfUserExists(PDO $db, string $user_name): bool
 {
     $stmt = $db->prepare("SELECT name FROM user WHERE name = :user_name");
