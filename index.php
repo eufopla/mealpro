@@ -47,6 +47,10 @@ $users_info = getAllUserInfo($pdo);
     </button>
 </a>
 <br><br>
+<br><br>
+<button onclick="window.location.href='form/addmeal.php'">
+    Consommer un repas
+</button>
 <button onclick="window.location.href='form/addmeal.php'">
     Ajouter un repas
 </button>

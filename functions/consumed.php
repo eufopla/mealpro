@@ -11,6 +11,28 @@ function getConsumedMealsByUserId(PDO $db, int $id): array
     $stmt->execute(['id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+function getConsumedMealsByUserInMonth(PDO $db, int $userId, int $month, int $year): array
+{
+    $stmt = $db->prepare("
+        SELECT
+            c.date_time,
+            m.name
+        FROM consumed c
+        INNER JOIN meal m ON m.id = c.id_meal
+        WHERE c.id_user = :id_user
+        AND MONTH(c.date_time) = :month
+        AND YEAR(c.date_time) = :year
+        ORDER BY c.date_time
+    ");
+
+    $stmt->execute([
+        'id_user' => $userId,
+        'month' => $month,
+        'year' => $year
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 function createConsumption(PDO $db, $iduser, $idmeal, $datetime): array
 {
     $stmt = $db->prepare("INSERT INTO consumed (id_user, id_meal, date_time) VALUES (:id_user, :id_meal, :date_time)");

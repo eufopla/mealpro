@@ -5,6 +5,7 @@ require_once '../config/database.php';
 require_once '../functions/meal.php';
 require_once '../functions/ingredient.php';
 require_once '../functions/user.php';
+require_once '../functions/consumed.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
     session_unset();
@@ -14,6 +15,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) {
 }
 
 $currentPage = basename($_SERVER['PHP_SELF']);
+
 $month = isset($_GET['month']) ? (int) $_GET['month'] : (int) date('m');
 $year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
 
@@ -61,6 +63,25 @@ $monthNames = [
     11 => 'Novembre',
     12 => 'Décembre'
 ];
+
+$consumed = getConsumedMealsByUserInMonth(
+    $pdo,
+    (int) $_SESSION['user_id'],
+    $month,
+    $year
+);
+
+$consumedByDate = [];
+
+foreach ($consumed as $meal) {
+    $date_time = date('Y-m-d', strtotime($meal['date_time']));
+
+    if (!isset($consumedByDate[$date_time])) {
+        $consumedByDate[$date_time] = [];
+    }
+
+    $consumedByDate[$date_time][] = $meal;
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -71,12 +92,14 @@ $monthNames = [
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+
 <div class="scanlines"></div>
 <div class="grid-bg"></div>
 
 <?php require_once '../sidebar.php'; ?>
 
 <div class="page-with-sidebar">
+
     <header>
         <div>
             <h2>Bienvenue <?= htmlspecialchars($_SESSION['user_name']) ?></h2>
@@ -86,19 +109,25 @@ $monthNames = [
     </header>
 
     <div class="calendar">
+
         <div class="calendar-header">
+
             <a href="?month=<?= $previousMonth ?>&year=<?= $previousYear ?>">
                 <button type="button">←</button>
             </a>
 
-            <h2><?= $monthNames[$month] ?> <?= $year ?></h2>
+            <h2>
+                <?= $monthNames[$month] ?> <?= $year ?>
+            </h2>
 
             <a href="?month=<?= $nextMonth ?>&year=<?= $nextYear ?>">
                 <button type="button">→</button>
             </a>
+
         </div>
 
         <div class="calendar-grid">
+
             <div class="calendar-day-name">Lun</div>
             <div class="calendar-day-name">Mar</div>
             <div class="calendar-day-name">Mer</div>
@@ -112,12 +141,43 @@ $monthNames = [
             <?php endfor; ?>
 
             <?php for ($day = 1; $day <= $daysInMonth; $day++): ?>
+
+                <?php
+                $date = sprintf(
+                    '%04d-%02d-%02d',
+                    $year,
+                    $month,
+                    $day
+                );
+                ?>
+
                 <div class="calendar-day">
-                    <span class="calendar-day-number"><?= $day ?></span>
+
+                    <span class="calendar-day-number">
+                        <?= $day ?>
+                    </span>
+
+                    <?php if (isset($consumedByDate[$date])): ?>
+
+                        <?php foreach ($consumedByDate[$date] as $meal): ?>
+
+                            <div class="calendar-event">
+                                <?= htmlspecialchars($meal['name']) ?>
+                            </div>
+
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
+
                 </div>
+
             <?php endfor; ?>
+
         </div>
+
     </div>
+
 </div>
+
 </body>
 </html>
