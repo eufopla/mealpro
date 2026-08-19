@@ -107,7 +107,6 @@ foreach ($consumed as $meal) {
             <p>Meal API</p>
         </div>
     </header>
-
     <div class="calendar">
 
         <div class="calendar-header">
